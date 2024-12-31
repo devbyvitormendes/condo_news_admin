@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Raleway, sans-serif;
+}
+
+ul {
+  list-style-type: none;
+}
+
+body {
+  position: relative;
+  background: #EAEAEA;
+}
+
+/* Sidebar styling */
+.sidebar {
+  height: 100vh;
+  background-color: #0C0C0C;
+  color: #D3D3D3;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+/* Main content styling */
+.main-content {
+  margin-left: 250px; /* Same as sidebar width */
+  padding: 20px;
+  width: calc(100% - 250px); /* Adjust content width to avoid overlap */
+}
+
+.main-content {
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+

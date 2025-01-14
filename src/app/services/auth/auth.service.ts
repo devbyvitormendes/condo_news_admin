@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthModel } from '../../model/auth/auth.model';
 import { AuthRequestModel } from '../../model/auth/authRequest.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,9 +11,6 @@ import { AuthRequestModel } from '../../model/auth/authRequest.model';
 export class AuthService {
   public avail: boolean = false;
   public message: string = '';
-
-  private isAuthenticated: boolean = false;
-  private authToken: string | null = null;
 
   apiUrlLogin: string = 'http://localhost:8686/api/v1/auth/authenticate';
 
@@ -37,10 +35,8 @@ export class AuthService {
           this.setStorageItem('refresh_token', response.refreshToken);
           this.setStorageItem('expires_at', response.expiresAt.toString());
           this.setStorageItem('id_condo', response.idCondo);
-          this.isAuthenticated = true;
           this.router.navigate(['/home']);
         } else {
-          this.isAuthenticated = false;
           this.message = response.message;
           alert(this.message);
         }
@@ -70,12 +66,6 @@ export class AuthService {
     }
   }
 
-  isLoggedIn(): boolean {
-    this.checkSessionExpiration();
-    this.authToken = this.getToken();
-    return !!this.authToken;
-  }
-
   getToken(): string | null {
     return (
       sessionStorage.getItem('access_token') ||
@@ -88,7 +78,6 @@ export class AuthService {
     this.removeStorageItem('refresh_token');
     this.removeStorageItem('expire_at');
     sessionStorage.clear();
-    this.isAuthenticated = false;
     this.router.navigate(['/login']);
   }
 }

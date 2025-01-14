@@ -17,18 +17,18 @@ export const routes: Routes = [
     },
     {
         path: 'home',
-        component: HomeComponent
+        component: HomeComponent,
     },
     {
         path: 'condo',
-        component: CondoComponent
+        component: CondoComponent,
     },
     {
         path: 'news',
-        component: NewsComponent
+        component: NewsComponent,
     },
     {
         path: 'residents',
-        component: ResidentsComponent
+        component: ResidentsComponent,
     }
 ];

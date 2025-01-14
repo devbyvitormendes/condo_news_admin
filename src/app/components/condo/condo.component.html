@@ -1,1 +1,32 @@
-<h2>Condomínio</h2>
+<app-spinner />
+<div class="container">
+  <div class="title-container">
+    <h2>Condomínio</h2>
+  </div>
+
+  <div class="container">
+    <div class="menu-bar">
+      <button mat-icon-button aria-label="Editar dados">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="container mt-20">
+    <div class="text-black">
+      <span class="text-label">Nome: </span>{{ condo.name ?? "-" }}
+    </div>
+    <div class="text-black mt-10">
+      <span class="text-label">Endereço: </span>{{ condo?.address ?? "-" }}
+    </div>
+    <div class="text-black mt-10">
+      <span class="text-label">Cidade: </span>{{ condo?.city ?? "-" }}
+    </div>
+    <div class="text-black mt-10">
+      <span class="text-label">Estado: </span>{{ condo?.state ?? "-" }}
+    </div>
+    <div class="text-black mt-10">
+      <span class="text-label">CEP: </span>{{ condo?.zipCode ?? "-" }}
+    </div>
+  </div>
+</div>

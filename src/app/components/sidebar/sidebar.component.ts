@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -9,7 +9,10 @@ import {
   faBuilding,
   faBars,
   faClose,
+  faSignOut,
+  faSign,
 } from '@fortawesome/free-solid-svg-icons';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -25,6 +28,7 @@ export class SidebarComponent {
   faBuilding = faBuilding;
   faNews = faNewspaper;
   faUsers = faUsers;
+  faSignOut = faSignOut;
 
   isSidebarCollapsed = input.required<boolean>();
   changeIsSidebarCollapsed = output<boolean>();
@@ -49,7 +53,14 @@ export class SidebarComponent {
       icon: faUsers,
       label: 'Residentes',
     },
+    {
+      routeLink: 'login',
+      icon: faSignOut,
+      label: 'Sair',
+    },
   ];
+
+  authService = inject(AuthService);
 
   toggleCollapse(): void {
     this.changeIsSidebarCollapsed.emit(!this.isSidebarCollapsed());
@@ -58,4 +69,9 @@ export class SidebarComponent {
   closeSidenav(): void {
     this.changeIsSidebarCollapsed.emit(true);
   }
+
+  onLogout(): void {
+    this.authService.logout();
+  }
+
 }

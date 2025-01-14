@@ -1,13 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { CondoModel } from '../../model/condo/condo.model';
-import { BaseService } from '../base.service';
+import { ResidentModel } from '../../model/residents/resident.model';
+import { PageResponseModel } from '../../model/pagination/pageResponse.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CondoService {
-  apiUrlCondo: string = 'http://localhost:8686/api/v1/condo';
+export class ResidentService {
+  apiUrlResident: string = 'http://localhost:8686/api/v1/resident';
 
   headers: HttpHeaders = new HttpHeaders({
     Authorization: 'Bearer ' + localStorage.getItem('access_token'),
@@ -16,15 +16,23 @@ export class CondoService {
     'Access-Control-Allow-Headers':
       "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'",
   });
-  
-  constructor() { }
+
+  constructor() {}
 
   http = inject(HttpClient);
 
-  getCondoInfo(id: string) {
-    return this.http
-      .get<CondoModel>(this.apiUrlCondo + `/${id}`, {
+  getResidents() {
+    return this.http.get<PageResponseModel<ResidentModel>>(
+      this.apiUrlResident,
+      {
         headers: this.headers,
-      });
+      }
+    );
+  }
+
+  deleteResidents(id: string) {
+    return this.http.delete(this.apiUrlResident + `/${id}`, {
+      headers: this.headers,
+    });
   }
 }

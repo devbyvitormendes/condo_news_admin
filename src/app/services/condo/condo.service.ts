@@ -27,4 +27,10 @@ export class CondoService {
         headers: this.headers,
       });
   }
+
+  updateCondo(condo: CondoModel) {
+    return this.http.put<CondoModel>(this.apiUrlCondo, condo, {
+      headers: this.headers,
+    });
+  }
 }

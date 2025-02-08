@@ -55,4 +55,11 @@ export class NewsService {
       headers: this.headers,
     });
   }
+
+  updateNews(news: NewsModel) {
+    return this.http.put<NewsModel>(this.apiUrlNews, news, {
+      headers: this.headers,
+    });
+  }
+  
 }

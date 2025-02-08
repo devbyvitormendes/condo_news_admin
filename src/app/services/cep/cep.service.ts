@@ -15,7 +15,6 @@ export class CepService {
     
       getCepInfo(cep: string) {
         this.cep = cep;
-
         return this.http.get<ViaCepModel>(this.apiUrlViaCep);
       }
 }

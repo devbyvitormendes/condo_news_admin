@@ -7,9 +7,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
-import { NewsFormComponent } from './news-form/news-form.component';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-news',
@@ -21,8 +20,8 @@ import { NewsFormComponent } from './news-form/news-form.component';
     MatCheckboxModule,
     MatIconModule,
     DatePipe,
-    MatDialogModule
-],
+    RouterModule,
+  ],
   templateUrl: './news.component.html',
   styleUrl: './news.component.scss',
 })
@@ -30,13 +29,24 @@ export class NewsComponent implements OnInit {
   breakingNewsDataSource: MatTableDataSource<NewsModel> =
     new MatTableDataSource();
   newsDataSource: MatTableDataSource<NewsModel> = new MatTableDataSource();
-  
+
   newsService = inject(NewsService);
   spinnerService = inject(SpinnerService);
-  dialog = inject(MatDialog);
+  router = inject(Router);
 
-  displayedColumnsBreaking: string[] = ['created', 'title', 'content', 'actions'];
-  displayedColumns: string[] = ['created', 'title', 'content', 'important', 'actions'];
+  displayedColumnsBreaking: string[] = [
+    'created',
+    'title',
+    'content',
+    'actions',
+  ];
+  displayedColumns: string[] = [
+    'created',
+    'title',
+    'content',
+    'important',
+    'actions',
+  ];
   currentPage: number = 0;
 
   ngOnInit(): void {
@@ -62,7 +72,7 @@ export class NewsComponent implements OnInit {
   }
 
   editNews(id: string) {
-    alert('Edit: ' + id);
+    this.router.navigate(['news/edit', id]);
   }
 
   deleteNews(id: string) {
@@ -73,10 +83,6 @@ export class NewsComponent implements OnInit {
   }
 
   addNews() {
-    const dialogRef = this.dialog.open(NewsFormComponent);
-    dialogRef.afterClosed().subscribe(() => {
-      this.getBreakingNews();
-      this.getNews();
-    });
+    this.router.navigate(['news/add']);
   }
 }

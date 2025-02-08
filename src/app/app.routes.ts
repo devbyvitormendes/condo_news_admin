@@ -4,6 +4,7 @@ import { HomeComponent } from './components/home/home.component';
 import { CondoComponent } from './components/condo/condo.component';
 import { NewsComponent } from './components/news/news.component';
 import { ResidentsComponent } from './components/residents/residents.component';
+import { NewsFormComponent } from './components/news/news-form/news-form.component';
 
 export const routes: Routes = [
     {
@@ -26,6 +27,14 @@ export const routes: Routes = [
     {
         path: 'news',
         component: NewsComponent,
+    },
+    {
+        path: 'news/add',
+        component: NewsFormComponent,
+    },
+    {
+        path: 'news/edit/:id',
+        component: NewsFormComponent,
     },
     {
         path: 'residents',

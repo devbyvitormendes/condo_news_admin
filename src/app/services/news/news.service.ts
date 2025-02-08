@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { NewsModel } from '../../model/news/news.model';
+import { NewsModel } from '../../model/news.model';
 import { PageResponseModel } from '../../model/pagination/pageResponse.model';
 import { Observable } from 'rxjs';
 

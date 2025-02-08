@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { ViaCepModel } from "../../model/viacep/viacep.model";
+import { ViaCepModel } from "../../model/viacep.model";
 
 @Injectable({
   providedIn: 'root',

@@ -3,7 +3,7 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { ResidentModel } from '../../model/residents/resident.model';
+import { ResidentModel } from '../../model/resident.model';
 import { ResidentService } from '../../services/residents/resident.service';
 import { CpfPipe } from '../../shared/pipes/cpf.pipe';
 

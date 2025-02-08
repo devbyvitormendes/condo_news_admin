@@ -1,7 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { NewsModel } from '../../../model/news/news.model';
+import { NewsModel } from '../../../model/news.model';
 import { NewsService } from '../../../services/news/news.service';
 import { SpinnerComponent } from '../../spinner/spinner.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';

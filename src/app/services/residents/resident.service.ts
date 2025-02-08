@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ResidentModel } from '../../model/residents/resident.model';
+import { ResidentModel } from '../../model/resident.model';
 import { PageResponseModel } from '../../model/pagination/pageResponse.model';
 
 @Injectable({

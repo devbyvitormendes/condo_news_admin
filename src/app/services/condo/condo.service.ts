@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { CondoModel } from '../../model/condo/condo.model';
+import { CondoModel } from '../../model/condo.model';
 import { BaseService } from '../base.service';
 
 @Injectable({

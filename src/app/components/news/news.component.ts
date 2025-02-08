@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { NewsModel } from '../../model/news/news.model';
+import { NewsModel } from '../../model/news.model';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { NewsService } from '../../services/news/news.service';
 import { SpinnerComponent } from '../spinner/spinner.component';

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CondoService } from '../../services/condo/condo.service';
-import { CondoModel } from '../../model/condo/condo.model';
+import { CondoModel } from '../../model/condo.model';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CepService } from '../../services/cep/cep.service';

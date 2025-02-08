@@ -1,4 +1,4 @@
-import { ContactType } from "./contact_type.enum";
+import { ContactType } from "./enums/contact_type.enum";
 
 export class ContactModel {
   id: string;

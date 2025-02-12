@@ -1,4 +1,5 @@
-import { ContactModel } from "../contact/contact.model";
+import { ContactModel } from "./contact.model";
+
 
 export class CondoModel {
   id: string;

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewsFormComponent } from './news-form.component';
+import { AddNewsFormComponent } from './add-news-form.component';
 
-describe('NewsFormComponent', () => {
-  let component: NewsFormComponent;
-  let fixture: ComponentFixture<NewsFormComponent>;
+describe('AddNewsFormComponent', () => {
+  let component: AddNewsFormComponent;
+  let fixture: ComponentFixture<AddNewsFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NewsFormComponent]
+      imports: [AddNewsFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NewsFormComponent);
+    fixture = TestBed.createComponent(AddNewsFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

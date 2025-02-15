@@ -4,6 +4,7 @@ export class NewsModel {
     content: string;
     image: string;
     date: string;
+    updatedAt: string;
     breaking: boolean;
     idCondo: string;
   
@@ -13,6 +14,7 @@ export class NewsModel {
         content: string,
         image: string,
         date: string,
+        updatedAt: string,
         breaking: boolean,
         idCondo: string
     ) {
@@ -21,12 +23,13 @@ export class NewsModel {
         this.content = content;
         this.image = image;
         this.date = date;
+        this.updatedAt = updatedAt;
         this.breaking = breaking;
         this.idCondo = idCondo;
     }
   
     static constructorEmpty(): NewsModel {
-      return new NewsModel('', '', '', '', '', false, '');
+      return new NewsModel('', '', '', '', '', '', false, '');
     }
   
   }

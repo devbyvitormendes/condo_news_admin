@@ -1,3 +1,7 @@
-<div class="body" [ngClass]="isSidebarCollapsed ? 'body-md-screen' : 'body-trimmed'">
+<div
+  class="body"
+  [ngClass]="isSidebarCollapsed ? 'body-md-screen' : 'body-trimmed'"
+>
   <router-outlet />
 </div>
+<app-toast />

@@ -1,7 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { CondoModel } from '../../model/condo.model';
-import { BaseService } from '../base.service';
+import { PageResponseModel } from '../../model/pagination/pageResponse.model';
+import { Observable } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -9,28 +11,58 @@ import { BaseService } from '../base.service';
 export class CondoService {
   apiUrlCondo: string = 'http://localhost:8686/api/v1/condo';
 
-  headers: HttpHeaders = new HttpHeaders({
-    Authorization: 'Bearer ' + localStorage.getItem('access_token'),
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': '*',
-    'Access-Control-Allow-Headers':
-      "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'",
-  });
-  
-  constructor() { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   http = inject(HttpClient);
 
-  getCondoInfo(id: string) {
-    return this.http
-      .get<CondoModel>(this.apiUrlCondo + `/${id}`, {
-        headers: this.headers,
-      });
+  private getHeaders(): HttpHeaders {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('access_token') || '';
+    }
+    
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': '*',
+      'Access-Control-Allow-Headers': "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'"
+    });
   }
 
-  updateCondo(condo: CondoModel) {
+  private getCondoId(): string {
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('id_condo') || '';
+    }
+    return '';
+  }
+
+  getCondos() {
+    return this.http.get<PageResponseModel<CondoModel>>(this.apiUrlCondo, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  getCondoById(id: string): Observable<CondoModel> {
+    return this.http.get<CondoModel>(`${this.apiUrlCondo}/${id}`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  addCondo(condo: CondoModel): Observable<CondoModel> {
+    return this.http.post<CondoModel>(this.apiUrlCondo, condo, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  updateCondo(condo: CondoModel): Observable<CondoModel> {
     return this.http.put<CondoModel>(this.apiUrlCondo, condo, {
-      headers: this.headers,
+      headers: this.getHeaders(),
+    });
+  }
+
+  deleteCondo(id: string) {
+    return this.http.delete(this.apiUrlCondo + `/${id}`, {
+      headers: this.getHeaders(),
     });
   }
 }

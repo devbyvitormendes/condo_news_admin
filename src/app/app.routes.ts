@@ -4,8 +4,8 @@ import { HomeComponent } from './components/home/home.component';
 import { CondoComponent } from './components/condo/condo.component';
 import { NewsComponent } from './components/news/news.component';
 import { ResidentsComponent } from './components/residents/residents.component';
-import { UpdateNewsFormComponent } from './components/news/update-news-form/update-news-form.component';
-import { AddNewsFormComponent } from './components/news/add-news-form/add-news-form.component';
+import { ResidentFormComponent } from './components/residents/resident-form/resident-form.component';
+import { NewsFormComponent } from './components/news/news-form/news-form.component';  
 
 export const routes: Routes = [
     {
@@ -31,14 +31,22 @@ export const routes: Routes = [
     },
     {
         path: 'news/add',
-        component: AddNewsFormComponent,
+        component: NewsFormComponent,
     },
     {
         path: 'news/edit/:id',
-        component: UpdateNewsFormComponent,
+        component: NewsFormComponent,
     },
     {
         path: 'residents',
         component: ResidentsComponent,
+    },
+    {
+        path: 'residents/add',
+        component: ResidentFormComponent,
+    },
+    {
+        path: 'residents/edit/:id',
+        component: ResidentFormComponent,
     }
 ];

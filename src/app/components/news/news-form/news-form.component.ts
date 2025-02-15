@@ -3,20 +3,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { NewsModel } from '../../../model/news.model';
 import { NewsService } from '../../../services/news/news.service';
-import { SpinnerComponent } from '../../spinner/spinner.component';
+import { SpinnerComponent } from '../../ui/spinner/spinner.component';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DatePipe } from '@angular/common';
-import { BASE_IMAGE_BASE64 } from '../../../shared/constants/image.constants';
+import { ToastService } from '../../../services/toast/toast.service';
+import { ToastComponent } from '../../ui/toast/toast.component';
 
 @Component({
-  selector: 'app-add-news-form',
+  selector: 'app-update-news-form',
   standalone: true,
   imports: [
     MatIconModule,
@@ -26,34 +28,54 @@ import { BASE_IMAGE_BASE64 } from '../../../shared/constants/image.constants';
     ReactiveFormsModule,
     MatIconModule,
     DatePipe,
+    ToastComponent,
   ],
-  providers: [DatePipe],
-  templateUrl: './add-news-form.component.html',
-  styleUrl: './add-news-form.component.scss',
+  providers: [DatePipe, ToastService],
+  templateUrl: './news-form.component.html',
+  styleUrl: './news-form.component.scss',
 })
-export class AddNewsFormComponent {
+export class NewsFormComponent {
   newsService = inject(NewsService);
+  toastService = inject(ToastService);
   formBuilder = inject(FormBuilder);
+  route = inject(ActivatedRoute);
   sanitizer = inject(DomSanitizer);
   datePipe = inject(DatePipe);
   
   news: NewsModel = NewsModel.constructorEmpty();
   isEditNews: boolean = false;
   newsForm: FormGroup = new FormGroup({});
-  base64Image: string = '';
   formDate: string = '';
 
   ngOnInit(): void {
     this.createNewsForm();
-    this.formDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm') || '';
+    if (this.route.snapshot.params['id']) {
+      this.isEditNews = true;
+      this.formDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm') || '';
+      this.newsService
+        .getNewsById(this.route.snapshot.params['id'])
+      .subscribe((response) => {
+        this.news = response;
+        this.patchNewsForm();
+      });
+    }
   }
 
   createNewsForm() {
     this.newsForm = this.formBuilder.group({
       title: ['', Validators.required],
       content: [''],
-      image: [BASE_IMAGE_BASE64],
+      image: [''],
       breaking: [false],
+    });
+  }
+
+  patchNewsForm() {
+    this.newsForm.patchValue({
+      title: this.news.title,
+      content: this.news.content,
+      image: this.news.image,
+      breaking: this.news.breaking,
     });
   }
 
@@ -69,12 +91,10 @@ export class AddNewsFormComponent {
       reader.onload = (e) => {
         const imageDataUrl = e.target?.result as string;
         this.newsForm.patchValue({ image: imageDataUrl });
-        this.base64Image = imageDataUrl;
       };
       reader.readAsDataURL(file);
     } else {
       this.newsForm.patchValue({ image: '' });
-      this.base64Image = '';
     }
   }
 
@@ -82,17 +102,50 @@ export class AddNewsFormComponent {
     const imageMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     return imageMimeTypes.includes(file.type);
   }
-  
+
+  saveNews() {
+    if (this.isEditNews) {
+      this.updateNews();
+    } else {
+      this.addNews();
+    }
+  }
 
   addNews() {
-    console.log('addNews');
     if (this.newsForm.valid) {
       this.news = this.newsForm.value;
       this.news.date = this.formDate;
       this.news.idCondo = localStorage.getItem('id_condo') || '';
       
-      this.newsService.addNews(this.news).subscribe((news) => {
-        this.goBack();
+      this.newsService.addNews(this.news).subscribe({
+        next: () => {
+          this.toastService.success('Criada', 'Notícia criada com sucesso');
+          this.goBack();
+        },
+        error: (error) => {
+          this.toastService.error('Erro', 'Erro ao criar notícia');
+          console.error('Error adding news:', error);
+        }
+      });
+    }
+  }
+
+  updateNews() {
+    if (this.isFormValid()) {
+      const newsUpdate: NewsModel = this.newsForm.value;
+      newsUpdate.id = this.news.id;
+      newsUpdate.date = this.news.date;
+      newsUpdate.idCondo = this.news.idCondo;
+
+      this.newsService.updateNews(newsUpdate).subscribe({
+        next: () => {
+          this.toastService.success('Atualizada', 'Notícia atualizada com sucesso');
+          // this.goBack();
+        },
+        error: (error) => {
+          this.toastService.error('Erro', 'Erro ao atualizar notícia');
+          console.error('Error updating news:', error);
+        }
       });
     }
   }

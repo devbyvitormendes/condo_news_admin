@@ -2,13 +2,15 @@ import { Component, inject, OnInit } from '@angular/core';
 import { NewsModel } from '../../model/news.model';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { NewsService } from '../../services/news/news.service';
-import { SpinnerComponent } from '../spinner/spinner.component';
+import { SpinnerComponent } from '../ui/spinner/spinner.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { ToastService } from '../../services/toast/toast.service';
+import { ToastComponent } from '../ui/toast/toast.component';
 
 @Component({
   selector: 'app-news',
@@ -21,6 +23,7 @@ import { Router, RouterModule } from '@angular/router';
     MatIconModule,
     DatePipe,
     RouterModule,
+    ToastComponent,
   ],
   templateUrl: './news.component.html',
   styleUrl: './news.component.scss',
@@ -32,16 +35,19 @@ export class NewsComponent implements OnInit {
 
   newsService = inject(NewsService);
   spinnerService = inject(SpinnerService);
+  toastService = inject(ToastService);
   router = inject(Router);
 
   displayedColumnsBreaking: string[] = [
     'created',
+    'updatedAt',
     'title',
     'content',
     'actions',
   ];
   displayedColumns: string[] = [
     'created',
+    'updatedAt',
     'title',
     'content',
     'important',
@@ -76,9 +82,16 @@ export class NewsComponent implements OnInit {
   }
 
   deleteNews(id: string) {
-    this.newsService.deleteNews(id).subscribe(() => {
-      this.getBreakingNews();
-      this.getNews();
+    this.newsService.deleteNews(id).subscribe({
+      next: () => {
+        this.toastService.success('Excluída', 'Notícia excluída com sucesso');
+        this.getBreakingNews();
+        this.getNews();
+      },
+      error: (error) => {
+        this.toastService.error('Erro', 'Erro ao excluir notícia');
+        console.error('Error deleting news:', error);
+      }
     });
   }
 

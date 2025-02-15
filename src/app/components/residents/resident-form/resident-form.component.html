@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="title-container">
+    <h2>Residente</h2>
+  </div>
+
+  <div class="container">
+    <div class="menu-bar">
+      <button mat-icon-button aria-label="Voltar" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="container mt-20">
+    <form [formGroup]="residentForm">
+      <div class="input-container">
+        <label for="name" class="text-label">Nome: </label>
+        <input
+          id="name"
+          type="text"
+          placeholder="Nome completo"
+          formControlName="name"
+        />
+      </div>
+      <div class="input-container">
+        <label for="email" class="text-label">E-mail: </label>
+        <input
+          id="email"
+          type="text"
+          placeholder="E-mail"
+          formControlName="email"
+        />
+      </div>
+      <div class="input-container">
+        <label for="cpf" class="text-label">CPF: </label>
+        <input
+          id="cpf"
+          type="text"
+          placeholder="CPF"
+          formControlName="cpf"
+        />
+      </div>
+      <div class="input-container">
+        <label for="phone" class="text-label">Telefone: </label>
+        <input
+          id="phone"
+          type="text"
+          placeholder="Telefone com ou sem DDD"
+          formControlName="phone"
+          phoneMask
+        />
+      </div>
+      <div class="input-container">
+        <label for="apartment" class="text-label">Apartamento: </label>
+        <input
+          id="apartment"
+          type="text"
+          placeholder="Número do apartamento"
+          formControlName="apartment"
+        />
+      </div>
+      <div class="button-container mb-10">
+        <button class="button-action" (click)="saveResident()">Salvar</button>
+        <button class="button-cancel" (click)="goBack()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<app-spinner />
+<app-toast />

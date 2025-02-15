@@ -8,14 +8,10 @@
       <button mat-icon-button aria-label="Voltar" (click)="goBack()">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <button mat-icon-button aria-label="Editar notícia" (click)="editNews()">
-        <mat-icon>edit</mat-icon>
-      </button>
     </div>
   </div>
 
   <div class="container mt-20">
-    @if (isEditNews) {
     <form [formGroup]="newsForm">
       <div class="input-container">
         <label for="title" class="text-label">Título: </label>
@@ -29,6 +25,11 @@
       <div class="input-container">
         <div class="text-black mt-10">
           <span class="text-label">Data: </span>{{ news?.date | date : "dd/MM/yyyy HH:mm" }}
+        </div>
+      </div>
+      <div class="input-container">
+        <div class="text-black mt-10">
+          <span class="text-label">Última atualização: </span>{{ news?.updatedAt | date : "dd/MM/yyyy HH:mm" }}
         </div>
       </div>
       <div class="input-container">
@@ -46,7 +47,7 @@
         <div class="text-black mt-10">
           <span class="text-label">Imagem: </span>
           <div class="container">
-            <img class="w-300" [src]="formNews.value.image" alt="Imagem da notícia" />
+            <img class="w-300" [src]="newsForm.value.image" alt="Imagem da notícia" />
           </div>
           <div class="container">
             <input type="file" (change)="onFileSelected($event)" />
@@ -58,40 +59,11 @@
         <mat-checkbox id="breaking" formControlName="breaking" [(ngModel)]="news.breaking" />
       </div>
       <div class="button-container mb-10">
-        <button class="button-action" (click)="updateNews()">Salvar</button>
-        <button class="button-cancel" (click)="cancel()">Cancelar</button>
+        <button class="button-action" (click)="saveNews()">Salvar</button>
+        <button class="button-cancel" (click)="goBack()">Cancelar</button>
       </div>
     </form>
-    } @if (!isEditNews) {
-    <div class="input-container">
-      <div class="text-black mt-10">
-        <span class="text-label">Título: </span>{{ news?.title }}
-      </div>
-    </div>
-    <div class="input-container">
-      <div class="text-black mt-10">
-        <span class="text-label">Data: </span>{{ news?.date | date : "dd/MM/yyyy HH:mm" }}
-      </div>
-    </div>
-    <div class="input-container">
-      <div class="text-black mt-10">
-        <span class="text-label">Conteúdo: </span>{{ news?.content ?? "-" }}
-      </div>
-    </div>
-    <div class="input-container">
-      <div class="text-black mt-10">
-        <span class="text-label">Imagem: </span>
-        <div class="container">
-          <img class="w-300" [src]="news?.image" alt="Imagem da noticia" />
-        </div>
-      </div>
-    </div>
-    <div class="input-container">
-      <div class="text-black mt-10">
-        <span class="text-label">Destaque: </span>{{ news?.breaking ? 'Sim' : 'Não' }}
-      </div>
-    </div>
-    }
   </div>
 </div>
 <app-spinner />
+<app-toast />

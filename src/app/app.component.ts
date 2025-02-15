@@ -6,7 +6,7 @@ import {
   PLATFORM_ID,
   signal,
 } from '@angular/core';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SidebarComponent } from './components/ui/sidebar/sidebar.component';
 import { HomeComponent } from './components/home/home.component';
 import { isPlatformBrowser } from '@angular/common';
 

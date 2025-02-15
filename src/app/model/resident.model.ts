@@ -4,15 +4,17 @@ export class ResidentModel {
     email: string;
     cpf: string;
     phone: string;
-    apartment: string
+    apartment: string;
+    idCondo: string;
 
     constructor(
         id: string,
         name: string,
         email: string,
-        cpf: string, 
+        cpf: string,
         phone: string,
         apartment: string,
+        idCondo: string
     ) {
         this.id = id;
         this.name = name;
@@ -20,10 +22,11 @@ export class ResidentModel {
         this.cpf = cpf;
         this.phone = phone;
         this.apartment = apartment;
+        this.idCondo = idCondo;
     }
   
     static constructorEmpty(): ResidentModel {
-      return new ResidentModel('', '', '', '', '', '');
+      return new ResidentModel('', '', '', '', '', '', '');
     }
   
   }

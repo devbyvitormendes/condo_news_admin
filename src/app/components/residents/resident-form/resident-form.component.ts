@@ -26,7 +26,7 @@ import { ToastService } from '../../../services/toast/toast.service';
     ReactiveFormsModule,
     PhoneMaskDirective,
     ToastComponent,
-  ],
+],
   providers: [ToastService],
   templateUrl: './resident-form.component.html',
   styleUrl: './resident-form.component.scss',

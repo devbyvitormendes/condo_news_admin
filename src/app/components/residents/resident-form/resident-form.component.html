@@ -13,7 +13,7 @@
 
   <div class="container mt-20">
     <form [formGroup]="residentForm">
-      <div class="input-container">
+      <div class="input-container col-half">
         <label for="name" class="text-label">Nome: </label>
         <input
           id="name"
@@ -22,7 +22,7 @@
           formControlName="name"
         />
       </div>
-      <div class="input-container">
+      <div class="input-container col-half">
         <label for="email" class="text-label">E-mail: </label>
         <input
           id="email"
@@ -31,7 +31,7 @@
           formControlName="email"
         />
       </div>
-      <div class="input-container">
+      <div class="input-container col-quarter">
         <label for="cpf" class="text-label">CPF: </label>
         <input
           id="cpf"
@@ -40,22 +40,22 @@
           formControlName="cpf"
         />
       </div>
-      <div class="input-container">
+      <div class="input-container col-quarter">
         <label for="phone" class="text-label">Telefone: </label>
         <input
           id="phone"
           type="text"
-          placeholder="Telefone com ou sem DDD"
+          placeholder="Telefone"
           formControlName="phone"
           phoneMask
         />
       </div>
-      <div class="input-container">
+      <div class="input-container col-quarter">
         <label for="apartment" class="text-label">Apartamento: </label>
         <input
           id="apartment"
           type="text"
-          placeholder="Número do apartamento"
+          placeholder="Apartamento"
           formControlName="apartment"
         />
       </div>

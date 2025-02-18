@@ -19,6 +19,7 @@
   overflow: hidden;
   position: relative;
   font-family: "Poppins", sans-serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .toast-icon img {
@@ -64,7 +65,7 @@
 }
 
 .success {
-  background-color: #eaeaea;
+  background-color: #d3d3d3;
   color: #518252;
   border: 1px solid #518252;
 }
@@ -74,7 +75,7 @@
 }
 
 .error {
-  background-color: #eaeaea;
+  background-color: #d3d3d3;
   color: #91241d;
   border: 1px solid #91241d;
 }
@@ -84,7 +85,7 @@
 }
 
 .warning {
-  background-color: #eaeaea;
+  background-color: #d3d3d3;
   color: #a8844e;
   border: 1px solid #a8844e;
 }
@@ -94,7 +95,7 @@
 }
 
 .info {
-  background-color: #eaeaea;
+  background-color: #d3d3d3;
   color: #354c6b;
   border: 1px solid #354c6b;
 }

@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthModel } from '../../model/auth/auth.model';
 import { AuthRequestModel } from '../../model/auth/authRequest.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -26,21 +26,23 @@ export class AuthService {
   http = inject(HttpClient);
   router = inject(Router);
 
-  login(authRequest: AuthRequestModel) {
+  login(authRequest: AuthRequestModel): Observable<AuthModel> {
     return this.http
       .post<AuthModel>(this.apiUrlLogin, authRequest, { headers: this.headers })
-      .subscribe((response) => {
-        if (response.token) {
-          this.setStorageItem('access_token', response.token);
-          this.setStorageItem('refresh_token', response.refreshToken);
-          this.setStorageItem('expires_at', response.expiresAt.toString());
-          this.setStorageItem('id_condo', response.idCondo);
-          this.router.navigate(['/home']);
-        } else {
-          this.message = response.message;
-          alert(this.message);
-        }
-      });
+      .pipe(
+        tap((response) => {
+          if (response.token) {
+            this.setStorageItem('access_token', response.token);
+            this.setStorageItem('refresh_token', response.refreshToken);
+            this.setStorageItem('expires_at', response.expiresAt.toString());
+            this.setStorageItem('id_condo', response.idCondo);
+            this.router.navigate(['/home']);
+          } else {
+            this.message = response.message;
+            throw new Error(this.message);
+          }
+        })
+      );
   }
 
   private setStorageItem(key: string, value: string) {

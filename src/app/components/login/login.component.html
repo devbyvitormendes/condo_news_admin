@@ -1,48 +1,31 @@
-<div class="parent">
-  <div class="container">
-    <div class="screen">
-      <div class="screen__content">
-        <form class="login">
-          <div class="login__field">
-            <i class="login__icon fas fa-user"></i>
-            <input
-              type="text"
-              name="username"
-              [(ngModel)]="authRequest.username"
-              class="login__input"
-              placeholder="Usuário / E-mail"
-            />
-          </div>
-          <div class="login__field">
-            <i class="login__icon fas fa-lock"></i>
-            <input
-              type="password"
-              name="password"
-              [(ngModel)]="authRequest.password"
-              class="login__input"
-              placeholder="Senha"
-            />
-          </div>
-          <button class="button login__submit" (click)="login()">
-            <span class="button__text">Entrar</span>
-            <fa-icon class="button__icon" [icon]="faChevronRight"></fa-icon>
-          </button>
-        </form>
-      </div>
-      <div class="screen__background">
-        <span
-          class="screen__background__shape screen__background__shape4"
-        ></span>
-        <span
-          class="screen__background__shape screen__background__shape3"
-        ></span>
-        <span
-          class="screen__background__shape screen__background__shape2"
-        ></span>
-        <span
-          class="screen__background__shape screen__background__shape1"
-        ></span>
-      </div>
+<div class="login-container">
+  <form (ngSubmit)="login()" #loginForm="ngForm" class="login-form">
+    <h2>Login</h2>
+    
+    <div class="form-group">
+      <label for="username">Usuário:</label>
+      <input 
+        type="text" 
+        id="username"
+        name="username"
+        [(ngModel)]="authRequest.username"
+        required
+        class="form-control">
     </div>
-  </div>
+
+    <div class="form-group">
+      <label for="password">Senha:</label>
+      <input 
+        type="password" 
+        id="password"
+        name="password"
+        [(ngModel)]="authRequest.password"
+        required
+        class="form-control">
+    </div>
+    
+    <button type="submit" [disabled]="!loginForm.form.valid" class="submit-btn">
+      Acessar
+    </button>
+  </form>
 </div>

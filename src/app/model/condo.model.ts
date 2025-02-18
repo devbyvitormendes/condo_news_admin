@@ -8,7 +8,7 @@ export class CondoModel {
   city: string;
   state: string;
   zipCode: string;
-  contact: ContactModel[];
+  contacts: ContactModel[];
   condoPhone: string;
   condoEmail: string;
 
@@ -19,7 +19,7 @@ export class CondoModel {
     city: string,
     state: string,
     zipCode: string,
-    contact: ContactModel[],
+    contacts: ContactModel[],
     condoPhone: string,
     condoEmail: string,
   ) {
@@ -28,7 +28,7 @@ export class CondoModel {
     this.address = address;
     this.city = city;
     this.state = state;
-    this.contact = contact;
+    this.contacts = contacts;
     this.zipCode = zipCode;
     this.condoPhone = condoPhone;
     this.condoEmail = condoEmail;

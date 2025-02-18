@@ -19,7 +19,7 @@
     @if (isEditCondo) {
     <form [formGroup]="condoForm">
       <div class="input-container">
-        <div class="col-third flex-align-center mr-10">
+        <div class="col-quarter flex-align-center mr-10">
           <label for="zipCode" class="text-label">CEP: </label>
           <input
             id="zipCode"
@@ -29,7 +29,7 @@
           />
           <mat-icon class="mr-10" (click)="searchZipCode()">search</mat-icon>
         </div>
-        <div class="col-two-thirds flex-align-center mr-10">
+        <div class="col-fill flex-align-center mr-10">
           <label for="address" class="text-label">Endereço: </label>
           <input
             id="address"
@@ -40,7 +40,7 @@
         </div>
       </div>
       <div class="input-container">
-        <div class="col-third flex-align-center mr-10">
+        <div class="col-quarter flex-align-center mr-10">
           <label for="city" class="text-label">Cidade: </label>
           <input
             id="city"
@@ -51,12 +51,12 @@
         </div>
         <div class="col-fill flex-align-center mr-10">
           <label for="state" class="text-label">Estado: </label>
-          <input
-            id="state"
-            type="text"
-            placeholder="Estado"
-            formControlName="state"
-          />
+          <select id="state" formControlName="state">
+            <option value="">Selecione</option>
+            @for (state of brazilianStates; track state.value) {
+              <option [value]="state.value">{{ state.label }}</option>
+            }
+          </select>
         </div>
       </div>
       <div class="input-container">
@@ -79,6 +79,141 @@
           />
         </div>
       </div>
+
+      <div class="contact-section">
+        <div class="text-black mt-10">
+          <span class="text-label">Contatos: </span>
+        </div>
+        @if (dataSource.data.length === 0) {
+        <div class="no-data-message">
+          <mat-icon>info</mat-icon>
+          <span class="ml-5">Nenhum contato cadastrado</span>
+        </div>
+        } @else {
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          class="mat-elevation-z1 w-100"
+        >
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Nome</th>
+            <td mat-cell *matCellDef="let contact">{{ contact?.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>Telefone</th>
+            <td mat-cell *matCellDef="let contact">{{ contact?.phone }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let contact">{{ contact?.email }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Tipo</th>
+            <td mat-cell *matCellDef="let contact">
+              {{ contact?.type | titlecase }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Ações</th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="text-align-last: center"
+            >
+              <div class="button-icon">
+                <button
+                  mat-icon-button
+                  aria-label="Editar"
+                  (click)="editContact(element?.id)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  aria-label="Excluir"
+                  (click)="deleteContact(element?.id)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedEditColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedEditColumns"></tr>
+        </table>
+
+        <mat-paginator
+          [pageSizeOptions]="[5, 10, 20]"
+          [pageSize]="10"
+          showFirstLastButtons
+          aria-label="Selecione a página de contatos"
+        >
+        </mat-paginator>
+        } @if (!contactFormEnabled) {
+        <div class="add-data-message" (click)="showContactForm()">
+          <mat-icon class="color-gray">add</mat-icon>
+          <span class="ml-5">Adicionar contato</span>
+        </div>
+        } @else {
+        <form [formGroup]="contactForm" class="mt-20">
+          <div class="input-container">
+            <div class="col-half flex-align-center mr-10">
+              <label for="name" class="text-label">Nome: </label>
+              <input
+                id="name"
+                type="text"
+                placeholder="Nome do contato"
+                formControlName="name"
+              />
+            </div>
+            <div class="col-fill flex-align-center mr-10">
+              <label for="type" class="text-label">Tipo de contato: </label>
+              <select id="type" formControlName="type">
+                @for (type of contactTypes; track type) {
+                <option [value]="type">{{ type | titlecase }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="input-container">
+            <div class="col-half flex-align-center mr-10">
+              <label for="phone" class="text-label">Telefone: </label>
+              <input
+                id="phone"
+                type="text"
+                placeholder="Telefone do contato"
+                formControlName="phone"
+              />
+            </div>
+            <div class="col-fill flex-align-center mr-10">
+              <label for="condoEmail" class="text-label">E-mail: </label>
+              <input
+                id="email"
+                type="text"
+                placeholder="E-mail do contato"
+                formControlName="email"
+              />
+            </div>
+          </div>
+          <div class="add-data-message mt-20">
+            <div class="button-container mt-10">
+              <button class="button-action" (click)="submitContact()">
+                Adicionar
+              </button>
+              <button class="button-cancel" (click)="hideContactForm()">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </form>
+        }
+      </div>
+
       <div class="button-container mb-10">
         <button class="button-action" (click)="updateCondo()">Salvar</button>
         <button class="button-cancel" (click)="cancel()">Cancelar</button>
@@ -113,7 +248,8 @@
     <div class="input-container">
       <div class="col-quarter">
         <div class="text-black mt-10">
-          <span class="text-label">Telefone: </span>{{ condo?.condoPhone ?? "-" }}
+          <span class="text-label">Telefone: </span
+          >{{ condo?.condoPhone ?? "-" }}
         </div>
       </div>
       <div class="col-fill">
@@ -121,6 +257,52 @@
           <span class="text-label">E-mail: </span>{{ condo?.condoEmail ?? "-" }}
         </div>
       </div>
+    </div>
+    <div class="contact-section">
+      <div class="text-black mt-10">
+        <span class="text-label">Contatos: </span>
+      </div>
+      @if (dataSource.data.length === 0) {
+      <div class="no-data-message">
+        <mat-icon>info</mat-icon>
+        <span class="ml-5">Nenhum contato cadastrado</span>
+      </div>
+      } @else {
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z1 w-100">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let contact">{{ contact?.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>Telefone</th>
+          <td mat-cell *matCellDef="let contact">{{ contact?.phone }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let contact">{{ contact?.email }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let contact">
+            {{ contact?.type | titlecase }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedViewColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedViewColumns"></tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 20]"
+        [pageSize]="10"
+        showFirstLastButtons
+        aria-label="Selecione a página de contatos"
+      >
+      </mat-paginator>
+      }
     </div>
     }
   </div>

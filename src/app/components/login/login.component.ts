@@ -4,6 +4,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { AuthRequestModel } from '../../model/auth/authRequest.model';
 import { AuthService } from '../../services/auth/auth.service';
+import { Router } from '@angular/router';
+import { ToastService } from '../../services/toast/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -18,8 +20,18 @@ export class LoginComponent {
 
   authRequest: AuthRequestModel = new AuthRequestModel('', '');
   authService = inject(AuthService);
-
+  toastService = inject(ToastService);
+  router = inject(Router);
+  
   login() {
-    this.authService.login(this.authRequest);
+    this.authService.login(this.authRequest).subscribe({
+      next: () => {
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        this.toastService.error('Erro', 'Erro ao realizar login');
+        console.error('Login failed:', error.message);
+      }
+    });
   }
 }

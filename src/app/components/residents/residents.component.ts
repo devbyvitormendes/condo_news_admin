@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { SpinnerComponent } from '../ui/spinner/spinner.component';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import { PhoneMaskPipe } from '../../shared/pipes/phone-mask.pipe';
 import { ToastComponent } from '../ui/toast/toast.component';
 import { ToastService } from '../../services/toast/toast.service';
+import { MatPaginator, MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorIntlProvider } from '../../shared/providers/mat-paginator-intl.provider';
 
 @Component({
   selector: 'app-residents',
@@ -22,13 +24,18 @@ import { ToastService } from '../../services/toast/toast.service';
     CpfPipe,
     PhoneMaskPipe,
     ToastComponent,
+    MatTableModule,
+    MatPaginatorModule,
   ],
+  providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlProvider }],
   templateUrl: './residents.component.html',
   styleUrl: './residents.component.scss',
 })
 export class ResidentsComponent implements OnInit {
   residentsDataSource: MatTableDataSource<ResidentModel> =
     new MatTableDataSource();
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   toastService = inject(ToastService);
   residentService = inject(ResidentService);
   router = inject(Router);
@@ -54,6 +61,7 @@ export class ResidentsComponent implements OnInit {
   getResidents() {
     this.residentService.getResidents().subscribe((response) => {
       this.residentsDataSource.data = response.content;
+      this.residentsDataSource.paginator = this.paginator;
     });
   }
 

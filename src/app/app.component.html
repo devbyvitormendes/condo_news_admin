@@ -1,9 +1,11 @@
-<app-sidebar
-  [isSidebarCollapsed]="isSidebarCollapsed()"
-  (changeIsSidebarCollapsed)="changeIsSidebarCollapsed($event)"
-/>
-
-<app-home
-  [isSidebarCollapsed]="isSidebarCollapsed()"
-  [screenWidth]="screenWidth()"
-/>
+<div class="app-container">
+  <app-sidebar
+    *ngIf="shouldShowSidebar()"
+    [isSidebarCollapsed]="isSidebarCollapsed()"
+    (changeIsSidebarCollapsed)="changeIsSidebarCollapsed($event)"
+  ></app-sidebar>
+  
+  <div class="content-area" [ngClass]="{'with-sidebar': shouldShowSidebar(), 'with-collapsed-sidebar': shouldShowSidebar() && isSidebarCollapsed()}">
+    <router-outlet></router-outlet>
+  </div>
+</div>

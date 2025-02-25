@@ -1,0 +1,20 @@
+.app-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  margin-top: 20px;
+}
+
+.content-area {
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  width: 100%;
+}
+
+.with-sidebar {
+  margin-left: 320px;
+}
+
+.with-collapsed-sidebar {
+  margin-left: 100px;
+}

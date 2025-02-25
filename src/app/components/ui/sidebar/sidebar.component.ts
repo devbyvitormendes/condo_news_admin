@@ -51,7 +51,7 @@ export class SidebarComponent {
     {
       routeLink: 'residents',
       icon: faUsers,
-      label: 'Residentes',
+      label: 'Moradores',
     },
     {
       routeLink: 'login',

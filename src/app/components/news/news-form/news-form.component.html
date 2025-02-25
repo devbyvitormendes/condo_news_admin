@@ -13,27 +13,31 @@
 
   <div class="container mt-20">
     <form [formGroup]="newsForm">
-      <div class="input-container">
+      <div class="input-container col-half">
         <label for="title" class="text-label">Título: </label>
         <input
           id="title"
           type="text"
-          placeholder="Título"
+          placeholder="Título da notícia"
           formControlName="title"
         />
       </div>
       <div class="input-container">
         <div class="text-black mt-10">
-          <span class="text-label">Data: </span>{{ news?.date | date : "dd/MM/yyyy HH:mm" }}
+          <span class="text-label">Data: </span
+          >{{ news?.date | date : "dd/MM/yyyy HH:mm" }}
         </div>
       </div>
       <div class="input-container">
         <div class="text-black mt-10">
-          <span class="text-label">Última atualização: </span>{{ news?.updatedAt | date : "dd/MM/yyyy HH:mm" }}
+          <span class="text-label">Última atualização: </span
+          >{{ news?.updatedAt | date : "dd/MM/yyyy HH:mm" }}
         </div>
       </div>
       <div class="input-container">
         <label for="content" class="text-label">Conteúdo: </label>
+      </div>
+      <div class="input-container col-half">
         <textarea
           id="content"
           placeholder="Texto da notícia"
@@ -47,7 +51,11 @@
         <div class="text-black mt-10">
           <span class="text-label">Imagem: </span>
           <div class="container">
-            <img class="w-300" [src]="newsForm.value.image" alt="Imagem da notícia" />
+            <img
+              class="w-300"
+              [src]="newsForm.value.image"
+              alt="Imagem da notícia"
+            />
           </div>
           <div class="container">
             <input type="file" (change)="onFileSelected($event)" />
@@ -56,7 +64,11 @@
       </div>
       <div class="input-container">
         <label for="breking" class="text-label">Destaque: </label>
-        <mat-checkbox id="breaking" formControlName="breaking" [(ngModel)]="news.breaking" />
+        <mat-checkbox
+          id="breaking"
+          formControlName="breaking"
+          [(ngModel)]="news.breaking"
+        />
       </div>
       <div class="button-container mb-10">
         <button class="button-action" (click)="saveNews()">Salvar</button>

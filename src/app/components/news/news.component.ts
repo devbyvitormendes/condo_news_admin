@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { NewsModel } from '../../model/news.model';
 import { SpinnerService } from '../../services/spinner/spinner.service';
 import { NewsService } from '../../services/news/news.service';
@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ToastService } from '../../services/toast/toast.service';
 import { ToastComponent } from '../ui/toast/toast.component';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-news',
@@ -24,6 +25,7 @@ import { ToastComponent } from '../ui/toast/toast.component';
     DatePipe,
     RouterModule,
     ToastComponent,
+    MatPaginatorModule,
   ],
   templateUrl: './news.component.html',
   styleUrl: './news.component.scss',
@@ -32,7 +34,9 @@ export class NewsComponent implements OnInit {
   breakingNewsDataSource: MatTableDataSource<NewsModel> =
     new MatTableDataSource();
   newsDataSource: MatTableDataSource<NewsModel> = new MatTableDataSource();
-
+  @ViewChild(MatPaginator) paginatorBreaking!: MatPaginator;
+  @ViewChild(MatPaginator) paginatorNews!: MatPaginator;
+  
   newsService = inject(NewsService);
   spinnerService = inject(SpinnerService);
   toastService = inject(ToastService);
@@ -68,12 +72,14 @@ export class NewsComponent implements OnInit {
   getBreakingNews() {
     this.newsService.getBreakingNews().subscribe((response) => {
       this.breakingNewsDataSource.data = response.content;
+      this.breakingNewsDataSource.paginator = this.paginatorBreaking;
     });
   }
 
   getNews() {
     this.newsService.getNews().subscribe((response) => {
       this.newsDataSource.data = response.content;
+      this.newsDataSource.paginator = this.paginatorNews;
     });
   }
 

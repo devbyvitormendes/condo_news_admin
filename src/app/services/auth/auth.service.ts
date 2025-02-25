@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthModel } from '../../model/auth/auth.model';
 import { AuthRequestModel } from '../../model/auth/authRequest.model';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,7 @@ export class AuthService {
       "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'",
   };
 
-  constructor() {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   http = inject(HttpClient);
   router = inject(Router);
@@ -46,15 +47,22 @@ export class AuthService {
   }
 
   private setStorageItem(key: string, value: string) {
-    localStorage.setItem(key, value);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(key, value);
+    }
   }
 
   private getStorageItem(key: string) {
-    return localStorage.getItem(key);
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem(key);
+    }
+    return null;
   }
 
   private removeStorageItem(key: string) {
-    localStorage.removeItem(key);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(key);
+    }
   }
 
   private checkSessionExpiration() {
@@ -69,17 +77,22 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return (
-      sessionStorage.getItem('access_token') ||
-      localStorage.getItem('access_token')
-    );
+    if (isPlatformBrowser(this.platformId)) {
+      return (
+        sessionStorage.getItem('access_token') ||
+        localStorage.getItem('access_token')
+      );
+    }
+    return null;
   }
 
   logout(): void {
     this.removeStorageItem('access_token');
     this.removeStorageItem('refresh_token');
     this.removeStorageItem('expire_at');
-    sessionStorage.clear();
+    if (isPlatformBrowser(this.platformId)) {
+      sessionStorage.clear();
+    }
     this.router.navigate(['/login']);
   }
 }

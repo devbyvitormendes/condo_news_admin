@@ -11,7 +11,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DatePipe } from '@angular/common';
 import { ToastService } from '../../../services/toast/toast.service';
@@ -46,9 +46,9 @@ export class NewsFormComponent {
   isEditNews: boolean = false;
   newsForm: FormGroup = new FormGroup({});
   formDate: string = '';
+  image: string = '../images/logo-texto.png';
 
   ngOnInit(): void {
-    this.createNewsForm();
     if (this.route.snapshot.params['id']) {
       this.isEditNews = true;
       this.formDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm') || '';
@@ -56,8 +56,15 @@ export class NewsFormComponent {
         .getNewsById(this.route.snapshot.params['id'])
       .subscribe((response) => {
         this.news = response;
+        this.createNewsForm();
         this.patchNewsForm();
       });
+    } else {
+      this.isEditNews = false;
+      this.formDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm') || '';
+      this.createNewsForm();
+      this.news.date = this.formDate;
+      this.news.updatedAt = this.formDate;
     }
   }
 
@@ -65,7 +72,7 @@ export class NewsFormComponent {
     this.newsForm = this.formBuilder.group({
       title: ['', Validators.required],
       content: [''],
-      image: [''],
+      image: [this.image],
       breaking: [false],
     });
   }
@@ -94,7 +101,7 @@ export class NewsFormComponent {
       };
       reader.readAsDataURL(file);
     } else {
-      this.newsForm.patchValue({ image: '' });
+      this.newsForm.patchValue({ image: this.image });
     }
   }
 

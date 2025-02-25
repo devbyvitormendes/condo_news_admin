@@ -3,6 +3,22 @@
   overflow: hidden;
 }
 
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: calc(50% - 300px);
+  margin-bottom: 10px;
+  z-index: 1000;
+}
+
+.logo {
+  max-height: 50px;
+}
+
 .login-container {
   display: flex;
   justify-content: center;

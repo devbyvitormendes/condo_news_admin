@@ -3,33 +3,29 @@ import { inject, Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthModel } from '../../model/auth/auth.model';
 import { AuthRequestModel } from '../../model/auth/authRequest.model';
-import { Observable, tap } from 'rxjs';
+import { BaseService } from '../base.service';
+import { Observable, tap, catchError, of, switchMap, timeout } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService extends BaseService {
   public avail: boolean = false;
   public message: string = '';
 
-  apiUrlLogin: string = 'http://localhost:8686/api/v1/auth/authenticate';
+  apiUrlLogin: string = `${this.apiUrl}/auth/authenticate`;
+  apiUrlRefresh: string = `${this.apiUrl}/auth/refresh-token`;
+  
+  private refreshTokenInProgress = false;
 
-  headers: any = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': '*',
-    'Access-Control-Allow-Headers':
-      "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'",
-  };
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
-
-  http = inject(HttpClient);
-  router = inject(Router);
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private router: Router, protected override http: HttpClient) {
+    super();
+  }
 
   login(authRequest: AuthRequestModel): Observable<AuthModel> {
     return this.http
-      .post<AuthModel>(this.apiUrlLogin, authRequest, { headers: this.headers })
+      .post<AuthModel>(this.apiUrlLogin, authRequest)
       .pipe(
         tap((response) => {
           if (response.token) {
@@ -42,8 +38,40 @@ export class AuthService {
             this.message = response.message;
             throw new Error(this.message);
           }
-        })
+        }),
+        catchError((error) => this.handleError(error, this))
       );
+  }
+
+  refreshToken(): Observable<boolean> {
+    if (this.refreshTokenInProgress) {
+      return of(false);
+    }
+
+    this.refreshTokenInProgress = true;
+    const refreshToken = this.getStorageItem('refresh_token');
+
+    if (!refreshToken) {
+      this.refreshTokenInProgress = false;
+      this.logout();
+      return of(false);
+    }
+
+    return this.http.post<AuthModel>(this.apiUrlRefresh, { refreshToken }).pipe(
+      timeout(5000),
+      switchMap((response) => {
+        this.refreshTokenInProgress = false;
+        if (response && response.token) {
+          this.setStorageItem('access_token', response.token);
+          this.setStorageItem('refresh_token', response.refreshToken);
+          this.setStorageItem('expires_at', response.expiresAt.toString());
+          return of(true);
+        }
+        this.logout();
+        return of(false);
+      }),
+      catchError((error) => this.handleError(error, this))
+    );
   }
 
   private setStorageItem(key: string, value: string) {
@@ -65,31 +93,43 @@ export class AuthService {
     }
   }
 
-  private checkSessionExpiration() {
-    const expireAt = this.getStorageItem('expire_at');
-    if (expireAt) {
-      const now = new Date().getTime();
-      const expireTime = parseInt(expireAt);
-      if (now > expireTime) {
-        this.logout();
-      }
+  isTokenExpired(): boolean {
+    const expiresAt = this.getStorageItem('expires_at');
+    if (!expiresAt) {
+      return true;
     }
+    
+    const expirationTime = parseInt(expiresAt);
+    const now = new Date().getTime();
+    
+    return now >= expirationTime;
   }
 
   getToken(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return (
-        sessionStorage.getItem('access_token') ||
-        localStorage.getItem('access_token')
-      );
+    try {
+      if (isPlatformBrowser(this.platformId)) {
+        if (this.isTokenExpired()) {
+          return null;
+        }
+        
+        const token = sessionStorage.getItem('access_token') || localStorage.getItem('access_token');
+        return token;
+      }
+    } catch (error) {
+      console.error('Error in getToken:', error);
     }
     return null;
+  }
+
+  hasRefreshToken(): boolean {
+    return !!this.getStorageItem('refresh_token');
   }
 
   logout(): void {
     this.removeStorageItem('access_token');
     this.removeStorageItem('refresh_token');
-    this.removeStorageItem('expire_at');
+    this.removeStorageItem('expires_at');
+    this.removeStorageItem('id_condo');
     if (isPlatformBrowser(this.platformId)) {
       sessionStorage.clear();
     }

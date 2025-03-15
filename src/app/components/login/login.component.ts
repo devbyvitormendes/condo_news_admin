@@ -30,6 +30,7 @@ export class LoginComponent {
       },
       error: (error) => {
         this.toastService.error('Erro', 'Erro ao realizar login');
+        console.log(error);
         console.error('Login failed:', error.message);
       }
     });

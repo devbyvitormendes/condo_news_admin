@@ -54,6 +54,11 @@ export class AppComponent implements OnInit {
   }
 
   shouldShowSidebar(): boolean {
-    return this.router.url !== '/login' && !!this.authService.getToken();
+    try {
+      return this.router.url !== '/login' && !!this.authService.getToken();
+    } catch (error) {
+      console.error('Error in shouldShowSidebar:', error);
+      return false;
+    }
   }
 }

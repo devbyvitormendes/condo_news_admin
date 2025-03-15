@@ -1,16 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { ToastComponent } from '../ui/toast/toast.component';
 import { ToastService } from '../../services/toast/toast.service';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { DashboardModel } from '../../model/dashboard.model';
-import { SpinnerComponent } from '../ui/spinner/spinner.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ToastComponent, SpinnerComponent],
+  imports: [CommonModule, ToastComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

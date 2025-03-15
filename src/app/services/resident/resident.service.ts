@@ -1,61 +1,50 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ResidentModel } from '../../model/resident.model';
-import { isPlatformBrowser } from '@angular/common';
 import { PageResponseModel } from '../../model/pagination/pageResponse.model';
+import { BaseService } from '../base.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ResidentService {
-  apiUrl: string = 'http://localhost:8686/api/v1/resident';
+export class ResidentService extends BaseService {
+  private readonly endpoint = '/resident';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
-
-  http = inject(HttpClient);
-
-  private getHeaders(): HttpHeaders {
-    let token = '';
-    if (isPlatformBrowser(this.platformId)) {
-      token = localStorage.getItem('access_token') || '';
-    }
-
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': '*',
-      'Access-Control-Allow-Headers':
-        "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'",
-    });
+  constructor(private authService: AuthService) {
+    super();
   }
 
-  getResidents() {
-    return this.http.get<PageResponseModel<ResidentModel>>(this.apiUrl, {
-      headers: this.getHeaders(),
-    });
+  getResidents(): Observable<PageResponseModel<ResidentModel>> {
+    return this.http
+      .get<PageResponseModel<ResidentModel>>(`${this.apiUrl}${this.endpoint}`)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 
-  getResident(id: string) {
-    return this.http.get<ResidentModel>(`${this.apiUrl}/${id}`, {
-      headers: this.getHeaders(),
-    });
+  getResident(id: string): Observable<ResidentModel> {
+    return this.http
+      .get<ResidentModel>(`${this.apiUrl}${this.endpoint}/${id}`)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 
-  addResident(resident: ResidentModel) {
-    return this.http.post<ResidentModel>(this.apiUrl, resident, {
-      headers: this.getHeaders(),
-    });
+  addResident(resident: ResidentModel): Observable<ResidentModel> {
+    const residentWithCondo = { ...resident, idCondo: this.getCondoId() };
+    return this.http
+      .post<ResidentModel>(`${this.apiUrl}${this.endpoint}`, residentWithCondo)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 
-  updateResident(resident: ResidentModel) {
-    return this.http.put<ResidentModel>(this.apiUrl, resident, {
-      headers: this.getHeaders(),
-    });
+  updateResident(resident: ResidentModel): Observable<ResidentModel> {
+    const residentWithCondo = { ...resident, idCondo: this.getCondoId() };
+    return this.http
+      .put<ResidentModel>(`${this.apiUrl}${this.endpoint}`, residentWithCondo)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 
-  deleteResident(id: string) {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
-      headers: this.getHeaders(),
-    });
+  deleteResident(id: string): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}${this.endpoint}/${id}`)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 }

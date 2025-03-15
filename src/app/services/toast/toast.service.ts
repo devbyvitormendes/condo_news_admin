@@ -1,48 +1,94 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+export type ToastType = 'success' | 'error' | 'warning' | 'info';
+
+export interface Toast {
+  id: number;
+  type: ToastType;
+  title?: string;
+  message: string;
+  duration?: number;
+}
+
+export interface ToastConfig {
+  defaultDuration: number;
+  maxToasts: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-export class ToastService {
+export class ToastService implements OnDestroy {
+  private readonly defaultConfig: ToastConfig = {
+    defaultDuration: 3000,
+    maxToasts: 5
+  };
 
-    private toasts: Toast[] = [];
-    private toastSubject = new BehaviorSubject<Toast[]>([]);
-    toasts$ = this.toastSubject.asObservable();
+  private toasts: Toast[] = [];
+  private toastSubject = new BehaviorSubject<Toast[]>([]);
+  private destroy$ = new Subject<void>();
 
-    private show(title: string, message: string, type: 'success' | 'error' | 'warning' | 'info') {
-        const id = Date.now();
-        const toast: Toast = { id, title, message, type };
-        this.toasts.push(toast);
-        this.toastSubject.next(this.toasts);
-        setTimeout(() => this.remove(id), 3000);
-        return id;
+  readonly toasts$: Observable<Toast[]> = this.toastSubject.asObservable();
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.toastSubject.complete();
+  }
+
+  private show(title: string | undefined, message: string, type: ToastType, duration?: number): number {
+    const id = Date.now();
+    const toast: Toast = { 
+      id, 
+      title, 
+      message, 
+      type,
+      duration: duration || this.defaultConfig.defaultDuration 
+    };
+
+    // Remove oldest toast if we exceed maxToasts
+    if (this.toasts.length >= this.defaultConfig.maxToasts) {
+      const oldestToast = this.toasts[0];
+      this.remove(oldestToast.id);
     }
 
-    remove(id: number) {
-        this.toasts = this.toasts.filter(t => t.id !== id);
-        this.toastSubject.next(this.toasts);
-    }
+    this.toasts.push(toast);
+    this.toastSubject.next([...this.toasts]);
 
-    success(title: string, message: string) {
-        return this.show(title, message, 'success');
-    }
+    // Setup auto-removal
+    setTimeout(
+      () => this.remove(id),
+      toast.duration
+    );
 
-    error(title: string, message: string) {
-        return this.show(title, message, 'error');
-    }
+    return id;
+  }
 
-    warning(title: string, message: string) {
-        return this.show(title, message, 'warning');
-    }
+  remove(id: number): void {
+    this.toasts = this.toasts.filter(t => t.id !== id);
+    this.toastSubject.next([...this.toasts]);
+  }
 
-    info(title: string, message: string) {
-        return this.show(title, message, 'info');
-    }
-}
+  removeAll(): void {
+    this.toasts = [];
+    this.toastSubject.next([]);
+  }
 
-export interface Toast {
-    id: number;
-    type: 'success' | 'error' | 'warning' | 'info';
-    title?: string;
-    message: string;
+  success(message: string, title?: string, duration?: number): number {
+    return this.show(title, message, 'success', duration);
+  }
+
+  error(message: string, title?: string, duration?: number): number {
+    return this.show(title, message, 'error', duration);
+  }
+
+  warning(message: string, title?: string, duration?: number): number {
+    return this.show(title, message, 'warning', duration);
+  }
+
+  info(message: string, title?: string, duration?: number): number {
+    return this.show(title, message, 'info', duration);
+  }
 }

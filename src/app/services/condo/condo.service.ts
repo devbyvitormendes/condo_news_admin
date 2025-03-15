@@ -1,68 +1,48 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { CondoModel } from '../../model/condo.model';
 import { PageResponseModel } from '../../model/pagination/pageResponse.model';
-import { Observable } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
+import { BaseService } from '../base.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CondoService {
-  apiUrlCondo: string = 'http://localhost:8686/api/v1/condo';
+export class CondoService extends BaseService {
+  private readonly endpoint = '/condo';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
-
-  http = inject(HttpClient);
-
-  private getHeaders(): HttpHeaders {
-    let token = '';
-    if (isPlatformBrowser(this.platformId)) {
-      token = localStorage.getItem('access_token') || '';
-    }
-    
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': '*',
-      'Access-Control-Allow-Headers': "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'"
-    });
+  constructor(private authService: AuthService) {
+    super();
   }
 
-  private getCondoId(): string {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('id_condo') || '';
-    }
-    return '';
-  }
-
-  getCondos() {
-    return this.http.get<PageResponseModel<CondoModel>>(this.apiUrlCondo, {
-      headers: this.getHeaders(),
-    });
+  getCondos(): Observable<PageResponseModel<CondoModel>> {
+    return this.http
+      .get<PageResponseModel<CondoModel>>(`${this.apiUrl}${this.endpoint}`)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 
   getCondoById(id: string): Observable<CondoModel> {
-    return this.http.get<CondoModel>(`${this.apiUrlCondo}/${id}`, {
-      headers: this.getHeaders(),
-    });
+    return this.http
+      .get<CondoModel>(`${this.apiUrl}${this.endpoint}/${id}`)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 
   addCondo(condo: CondoModel): Observable<CondoModel> {
-    return this.http.post<CondoModel>(this.apiUrlCondo, condo, {
-      headers: this.getHeaders(),
-    });
+    return this.http
+      .post<CondoModel>(`${this.apiUrl}${this.endpoint}`, condo)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 
   updateCondo(condo: CondoModel): Observable<CondoModel> {
-    return this.http.put<CondoModel>(this.apiUrlCondo, condo, {
-      headers: this.getHeaders(),
-    });
+    return this.http
+      .put<CondoModel>(`${this.apiUrl}${this.endpoint}`, condo)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 
-  deleteCondo(id: string) {
-    return this.http.delete(this.apiUrlCondo + `/${id}`, {
-      headers: this.getHeaders(),
-    });
+  deleteCondo(id: string): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}${this.endpoint}/${id}`)
+      .pipe(catchError((error) => this.handleError(error, this.authService)));
   }
 }
